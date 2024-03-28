@@ -1,0 +1,21 @@
+
+{% extends 'padre.html' %}
+{% load static %}
+
+{% block contenido %}
+    <h2>Alta de alumno</h2>
+    <form action="registrar" method="POST">
+        {% csrf_token %}
+        <p>Nombre: </p>
+        <input type="text" name="nombre" required>
+        <p>email</p>
+        <input type="email" name="email" required>
+        <button type="submit">Enviar</button> 
+    </form>
+
+    {% if mensaje %}
+        <p>{{ mensaje }}</p>
+    {% endif %}
+
+ 
+{% endblock %}
