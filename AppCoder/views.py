@@ -131,6 +131,6 @@ def ver_alumnos(request):
             alumno = Alumnos.objects.get(nombre=nombre)
         except Alumnos.DoesNotExist:   
             f"El alumno no fue encontrado"
-            pass  # El alumno no fue encontrado, puedes manejar esto de la manera que desees
+            pass  
 
     return render(request, 'ingresar.html', {'alumno': alumno})
