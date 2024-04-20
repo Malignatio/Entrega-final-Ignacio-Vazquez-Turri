@@ -1,0 +1,24 @@
+
+{% extends "padre.html" %}
+{% load static %}
+
+{% block contenido %}
+   
+   <div class="container">
+        <div class="row">
+            <div class="col-12  col-md-4">
+                <div class="card">
+                    <img src="{% static 'AppCoder/assets/img/testimonials-2.jpg' %}"/>
+                    <div class="card-body">
+                        <h5 class="card-title">Nacho Vazquez Turri</h5>
+                        <p class="card-text">Coder App </p>
+                        <a class="btn btn-danger" href="">Enviar mensaje</a>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+    <a href="" class="btn btn-danger">LogOut</a>
+
+{% endblock %}

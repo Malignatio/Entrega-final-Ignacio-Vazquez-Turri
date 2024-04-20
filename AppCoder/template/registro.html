@@ -1,0 +1,22 @@
+
+{% extends 'padre.html' %}
+{% load static %}
+
+
+{% block contenido %}
+
+    <h2>Nuevo usuario</h2>
+    <form action ="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>Registrar</button>
+
+    </form>
+
+
+
+
+
+
+
+{% endblock %}
