@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from AppCoder.models import Curso, Avatar
 from AppCoder.forms import Alumnos_formulario, AvatarForm
-from AppCoder.models import Alumnos
+from AppCoder.models import Alumnos, Profesores
 from django.http import HttpResponse
 from django.template import loader
 from AppCoder.forms import Curso_formulario
@@ -14,7 +14,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def inicio(request):
-    return render(request , "padre.html")
+    avatares = Avatar.objects.filter(user=request.user.id)
+    return render(request , "padre.html", {"padre": inicio,"url":avatares[0].imagen.url if avatares.exists () else None})
 
 
 def alta_curso(request, nombre):
@@ -28,10 +29,11 @@ def alta_curso(request, nombre):
 @login_required
 def ver_cursos(request):
     cursos = Curso.objects.all()
+    avatares = Avatar.objects.filter(user=request.user.id)
     dicc = {"cursos" : cursos }
     plantilla = loader.get_template("cursos.html")
     documento = plantilla.render(dicc)
-    return HttpResponse(documento) 
+    return render(request , "cursos.html", {"cursos": cursos,"url":avatares[0].imagen.url if avatares.exists () else None})
 
 def ver_alumnos(request):
     alumnos_registrados = Alumnos.objects.all()
@@ -43,10 +45,16 @@ def ver_alumnos(request):
 
 
 def alumnos(request):
-    return render(request , "alumnos.html" )
+    avatares = Avatar.objects.filter(user=request.user.id)
+    
+    return render(request , "alumnos.html", {"alumnos": alumnos, "url":avatares[0].imagen.url if avatares.exists () else None})
 
-def profesores(request):
-    return render(request , "profesores.html" )
+
+def profesores (request):
+    profesores= Profesores.objects.all()
+    avatares = Avatar.objects.filter(user=request.user.id)
+
+    return render(request , "profesores.html", {"profesores": profesores, "url":avatares[0].imagen.url if avatares.exists () else None})
 
 def curso_formulario(request):
 
@@ -70,6 +78,7 @@ def baja_formulario(request):
 
 
 def buscar(request):
+    
     if request.GET["nombre"]:
         nombre = request.GET["nombre"]
         cursos = Curso.objects.filter(nombre__icontains= nombre)
@@ -80,8 +89,8 @@ def buscar(request):
     
 
 def buscar_curso(request):
-
-    return render(request, "buscar_curso.html")
+    avatares = Avatar.objects.filter(user=request.user.id)
+    return render(request, "buscar_curso.html",{"cursos": buscar_curso,"url":avatares[0].imagen.url if avatares.exists () else None})
 
 
 
@@ -130,6 +139,7 @@ def editar(request , id):
 
 
 def ver_alumnos(request):
+    
     alumno = None
     if 'nombre' in request.GET:
         nombre = request.GET['nombre']
@@ -169,6 +179,21 @@ def login_request(request):
     form = AuthenticationForm()
     return render( request , "login.html" , {"form":form})
 
+
+
+def login_inicio(request):
+    if request.method == "GET":
+        # Verifica si el usuario está autenticado
+        if request.user.is_authenticated:
+            avatares = Avatar.objects.filter(user=request.user.id)
+            if avatares.exists():
+                return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+            else:
+                # Si el usuario está autenticado pero no tiene avatar, renderiza una plantilla sin la imagen
+                return render(request, "inicio.html")
+        else:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return render(request, "login.html", {"form": AuthenticationForm()})
 
 
 def register(request):
