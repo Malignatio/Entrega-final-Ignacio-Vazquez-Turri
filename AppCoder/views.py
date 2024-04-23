@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from AppCoder.models import Curso, avatar
-from AppCoder.forms import Alumnos_formulario
+from django.shortcuts import render, redirect
+from AppCoder.models import Curso, Avatar
+from AppCoder.forms import Alumnos_formulario, AvatarForm
 from AppCoder.models import Alumnos
 from django.http import HttpResponse
 from django.template import loader
@@ -105,6 +105,7 @@ def elimina_curso(request, id):
     curso = Curso.objects.get(id=id)
     curso.delete()
     curso= Curso.objects.all()
+   
 
     return render(request, "cursos.html", {"cursos" : curso})
 
@@ -141,30 +142,34 @@ def ver_alumnos(request):
     return render(request, 'ingresar.html', {'alumno': alumno})
 
 
+from django.shortcuts import redirect
+
 def login_request(request):
+
     if request.method == "POST":
-        form = AuthenticationForm(request, data =request.POST)
+        form = AuthenticationForm(request, data=request.POST)
 
         if form.is_valid():
+
             usuario = form.cleaned_data.get("username")
             contra = form.cleaned_data.get("password")
 
-            user = authenticate(username = usuario , password = contra)
+            user = authenticate(username=usuario , password=contra)
 
             if user is not None:
-                login(request , user)
-                avatares = avatar.objets.filter(user=request.user.id)
-                return render(request, "inicio.html", {"url" : avatares[0].imagen.url , "mensaje" : f"Bienvenido/a {usuario}"})
+                login(request , user )
+                avatares = Avatar.objects.filter(user=request.user.id)
+                return render( request , "inicio.html" , {"url":avatares[0].imagen.url})
             else:
-                return HttpResponse(f"Usuario no encontrado ")
+                return HttpResponse(f"Usuario no encontrado")
         else:
-            return HttpResponse(f" FORM INCORRECTO {form}")
-
-
+            return HttpResponse(f"FORM INCORRECTO {form}")
 
 
     form = AuthenticationForm()
-    return render( request, "login.html" , {"form": form})
+    return render( request , "login.html" , {"form":form})
+
+
 
 def register(request):
     
@@ -172,7 +177,8 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse("Usuario creado")
+           
+        return render(request, "inicio.html")
     else:
         form = UserCreationForm()
     return render(request , "registro.html" , {"form":form})
@@ -181,12 +187,12 @@ def editarPerfil(request):
     usuario = request.user
 
     if request.method =="POST":
-        mi_formulario = UserEditForm(request.form)
+        mi_formulario = UserEditForm(request.POST)
 
         if mi_formulario.is_valid():
             informacion = mi_formulario.cleaned_data
             usuario.email = informacion["email"]
-            password = informacion["password"]
+            password = informacion["password1"]
             usuario.set_password(password)
             usuario.save()
             return render(request , "inicio.html")
@@ -194,3 +200,16 @@ def editarPerfil(request):
         miFormulario = UserEditForm(initial={"email":usuario.email})
     
     return render( request , "editar_perfil.html", {"miFormulario":miFormulario, "usuario":usuario})
+
+def actualizar_avatar(request):
+    if request.method == 'POST':
+        form = AvatarForm(request.POST, request.FILES, instance=request.user.avatar)
+        if form.is_valid():
+            avatar = form.save(commit=False)
+            avatar.user = request.user
+            avatar.save()
+            return redirect('inicio')  # Corregido el nombre de la página de inicio
+    else:
+        form = AvatarForm(instance=request.user.avatar)  # Cargar avatar existente si hay uno
+
+    return render(request, 'upload_avatar.html', {'form': form})

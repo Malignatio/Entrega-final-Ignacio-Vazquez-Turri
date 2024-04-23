@@ -1,24 +1,23 @@
-
 {% extends "padre.html" %}
 {% load static %}
 
 {% block contenido %}
-   
-   <div class="container">
-        <div class="row">
-            <div class="col-12  col-md-4">
-                <div class="card">
-                    <img src="{% static 'AppCoder/assets/img/testimonials-2.jpg' %}"/>
+    <h2>{{ mensaje }}</h2>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4">
+                <div class="card text-center">
+                    <img src="{% static 'AppCoder/assets/img/IMG_20230407_181639.jpg' %}" class="card-img-top" alt="Avatar Image">
                     <div class="card-body">
-                        <h5 class="card-title">Nacho Vazquez Turri</h5>
-                        <p class="card-text">Coder App </p>
-                        <a class="btn btn-danger" href="">Enviar mensaje</a>
+                        <h5 class="card-title">{{ usuario }}</h5>
+                        <a href="{% url 'EditarPerfil' %}" class="btn btn-warning">Editar correo</a>
+                        <form method="post" action="{% url 'Logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Salir</button>
+                        </form>
                     </div>
                 </div>
-            
             </div>
         </div>
     </div>
-    <a href="" class="btn btn-danger">LogOut</a>
-
 {% endblock %}

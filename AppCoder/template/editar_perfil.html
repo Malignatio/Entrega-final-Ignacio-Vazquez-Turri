@@ -4,7 +4,7 @@
 
 
 {% block contenido %}
-    <h2>Editar Perfil {{usuario}}</h2>
+    <h2>Editar email {{usuario}}</h2>
 
 
     <form action="" method="POST">
@@ -15,6 +15,10 @@
         <button>Enviar</button>
 
     </form>
+    
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-primary">Volver</a>
+    </div>
 
   
   

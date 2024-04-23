@@ -1,22 +1,17 @@
-
-{% extends 'padre.html' %}
+{% extends "padre.html" %}
 {% load static %}
 
-
 {% block contenido %}
-
-    <h2>Ingrese sus datos</h2>
-    <form action ="" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button>Enviar</button>
-
-    </form>
-
-
-
-
-
-
-
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <h2>Ingrese sus datos</h2>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

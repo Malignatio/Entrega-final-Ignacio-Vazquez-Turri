@@ -31,18 +31,28 @@
                 <a class="btn btn-primary" href="{% url 'Login' %}">Ingresar</a>
                 {% endif %}
                 {% if  request.user.is_authenticated %}
+                    
+                {% csrf_token %}
+                    
+                
                 <img src="{{url}}" alt="" width="100px" height="100px">
                 <p>Bienvenido, {{user.username}}</p>
-                <a class="btn btn-primary" href="{% url 'Logout' %}">Salir</a>
+
+                <form action=" {% url 'Logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Salir</button>
+
+                </form>
+
                 {% endif %}
                 <a class="btn btn-primary" href="{% url 'Register' %}">Registrar</a>
 
             </div>
         </nav>
         <!-- Masthead-->
-        <header class="masthead">
+        <header class="masthead" style="background-image: url('{% static "AppCoder/assets/img/istockphoto-1460853312-612x612.jpg" %}');">
             <div class="container position-relative">
-                <h1 class="text-center" style="color:white">Pre Entrega 3 Nacho Vazquez Turri</h1>
+                <h1 class="text-center" style="color:white">Entrega final Nacho Vazquez Turri</h1>
             </div>
         </header>
 

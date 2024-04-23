@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Avatar
 
 
 class Curso_formulario(forms.Form):
@@ -28,3 +29,8 @@ class UserEditForm(UserCreationForm):
         model = User
         fields = ['email','password1','password2']
         help_text = {k:"" for k in fields}
+
+class AvatarForm(forms.ModelForm):
+    class Meta:
+        model = Avatar
+        fields = ['imagen']

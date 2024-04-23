@@ -6,7 +6,10 @@
 
 {% block contenido %}
     <main class = container>
+        
+
         <a href="alta_curso" class = "btn btn-primary btn-sm"  >Nuevo curso    </a>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -21,8 +24,9 @@
                     <td>{{n.id}}</td>
                     <td>{{n.nombre}}</td>
                     <td>{{n.camada}}</td>
-                    <td><a href = "{% url 'elimina_curso' n.id %}" class = "btn btn-danger" >Borrar</a></td>
                     <td><a href = "{% url 'editar_curso' n.id %}" class = "btn btn-warning btn-small" >editar</a></td>
+                    <td><a href = "{% url 'elimina_curso' n.id %}" class = "btn btn-danger" >Borrar</a></td>
+                
                 </tr>
 
                 {% endfor %}
@@ -31,6 +35,9 @@
 
 
         </table>
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="btn btn-primary">Volver</a>
+        </div>
     </main>
 {% endblock %}
     
