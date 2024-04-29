@@ -1,0 +1,16 @@
+{% extends "padre.html" %}
+{% load static %}
+
+
+{% block contenido %}
+
+<div class="container-fluid">
+    <h2 class="text-center">No se encontraron cursos con ese nombre</h2>
+    <div class="text-center">
+        <a href="{% url 'buscar_curso' %}" class="btn btn-primary">Volver</a>
+    </div>
+</div>
+
+
+
+{% endblock %}

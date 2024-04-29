@@ -78,18 +78,22 @@ def baja_formulario(request):
 def error_login(request):
     return render(request , "Error_Login.html" )
 
+def error_buscar_curso(request):
+    return render(request , "error_buscar_curso.html" )
+
 
 
 
 def buscar(request):
-    
-    if request.GET["nombre"]:
+    if "nombre" in request.GET:
         nombre = request.GET["nombre"]
-        cursos = Curso.objects.filter(nombre__icontains= nombre)
-        return render(request, "resultado_busqueda.html", {"cursos" : cursos})
-
+        cursos = Curso.objects.filter(nombre__icontains=nombre)
+        if cursos.exists():
+            return render(request, "resultado_busqueda.html", {"cursos": cursos})
+        else:
+            return render(request, "error_buscarcurso.html")
     else:
-        return HttpResponse ("Ingrese el nombre del curso")
+        return render(request, "error_buscarcurso.html")
     
 
 def buscar_curso(request):
@@ -222,8 +226,8 @@ def actualizar_avatar(request):
             avatar = form.save(commit=False)
             avatar.user = request.user
             avatar.save()
-            return redirect('inicio')  # Corregido el nombre de la página de inicio
+            return redirect('inicio') 
     else:
-        form = AvatarForm(instance=request.user.avatar)  # Cargar avatar existente si hay uno
+        form = AvatarForm(instance=request.user.avatar)  
 
     return render(request, 'upload_avatar.html', {'form': form})
