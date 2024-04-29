@@ -75,6 +75,10 @@ def curso_formulario(request):
 def baja_formulario(request):
     return render(request , "baja_formulario.html" )
 
+def error_login(request):
+    return render(request , "Error_Login.html" )
+
+
 
 
 def buscar(request):
@@ -93,21 +97,6 @@ def buscar_curso(request):
     return render(request, "buscar_curso.html",{"cursos": buscar_curso,"url":avatares[0].imagen.url if avatares.exists () else None})
 
 
-
-
-
-def registrar(request):
-    alumno_nuevo = Alumnos_formulario(request.POST or None)
-    if request.method == "POST":
-        if alumno_nuevo.is_valid():
-            
-            nombre = alumno_nuevo.cleaned_data['nombre']
-            email = alumno_nuevo.cleaned_data['email']
-            alumno = Alumnos(nombre=nombre, email=email)
-            alumno.save()
-            return render(request, "registrar.html", {'mensaje': 'Alumno registrado exitosamente.'})
-    
-    return render(request, "registrar.html")
 
 def elimina_curso(request, id):
     
@@ -173,7 +162,7 @@ def login_request(request):
             else:
                 return HttpResponse(f"Usuario no encontrado")
         else:
-            return HttpResponse(f"FORM INCORRECTO {form}")
+            return render( request , "error_login.html") 
 
 
     form = AuthenticationForm()
@@ -183,16 +172,16 @@ def login_request(request):
 
 def login_inicio(request):
     if request.method == "GET":
-        # Verifica si el usuario está autenticado
+        
         if request.user.is_authenticated:
             avatares = Avatar.objects.filter(user=request.user.id)
             if avatares.exists():
                 return render(request, "inicio.html", {"url": avatares[0].imagen.url})
             else:
-                # Si el usuario está autenticado pero no tiene avatar, renderiza una plantilla sin la imagen
+               
                 return render(request, "inicio.html")
         else:
-            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            
             return render(request, "login.html", {"form": AuthenticationForm()})
 
 

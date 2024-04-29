@@ -1,0 +1,12 @@
+{% extends "padre.html" %}
+{% load static %}
+
+
+{% block contenido %}
+<div class="container-fluid">
+    <h2 class="text-center">Contraseña incorrecta, vuelva a ingresar</h2>
+    <div class="text-center">
+        <a href="{% url 'Login' %}" class="btn btn-primary">Ingresar</a>
+    </div>
+</div>
+{% endblock %}
