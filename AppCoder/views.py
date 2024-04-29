@@ -148,30 +148,31 @@ def ver_alumnos(request):
 from django.shortcuts import redirect
 
 def login_request(request):
-
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
 
         if form.is_valid():
-
             usuario = form.cleaned_data.get("username")
             contra = form.cleaned_data.get("password")
 
             user = authenticate(username=usuario , password=contra)
 
             if user is not None:
-                login(request , user )
+                login(request , user)
                 avatares = Avatar.objects.filter(user=request.user.id)
-                return render( request , "inicio.html" , {"url":avatares[0].imagen.url})
-            else:
-                return HttpResponse(f"Usuario no encontrado")
-        else:
-            return render( request , "error_login.html") 
 
+                if avatares: 
+                    return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+                else:
+                   
+                    return render(request, "inicio.html")
+            else:
+                return HttpResponse("Usuario no encontrado")
+        else:
+            return render(request, "error_login.html") 
 
     form = AuthenticationForm()
-    return render( request , "login.html" , {"form":form})
-
+    return render(request, "login.html", {"form": form})
 
 
 def login_inicio(request):
@@ -206,6 +207,7 @@ def editarPerfil(request):
 
     if request.method =="POST":
         mi_formulario = UserEditForm(request.POST)
+        avatares = Avatar.objects.filter(user=request.user.id)
 
         if mi_formulario.is_valid():
             informacion = mi_formulario.cleaned_data
@@ -213,9 +215,9 @@ def editarPerfil(request):
             password = informacion["password1"]
             usuario.set_password(password)
             usuario.save()
-            return render(request , "inicio.html")
+            return render(request, "inicio.html", {"url": avatares[0].imagen.url})
     else:
-        miFormulario = UserEditForm(initial={"email":usuario.email})
+        miFormulario = UserEditForm(initial={"email":usuario.email} )
     
     return render( request , "editar_perfil.html", {"miFormulario":miFormulario, "usuario":usuario})
 
