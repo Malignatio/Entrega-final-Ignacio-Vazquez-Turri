@@ -7,14 +7,22 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-4">
                 <div class="card text-center">
-                    <img src="" class="card-img-top" alt="Avatar Image">
+                    
+                    
+                    <img src="{{ avatares.0.imagen.url }}" class="card-img-top" alt="Avatar Image">
+                    
                     <div class="card-body">
                         <h5 class="card-title">{{ usuario }}</h5>
-                        <a href="{% url 'EditarPerfil' %}" class="btn btn-warning">Editar correo</a>
-                        <form method="post" action="{% url 'Logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Salir</button>
-                        </form>
+                        <div class="btn-group-vertical">
+                            <a href="{% url 'subir_avatar' %}" class="btn btn-primary mb-2">Actualizar avatar</a>
+                            <a href="{% url 'EditarPerfil' %}" class="btn btn-warning mb-2">Editar correo</a>
+                            <form method="post" action="{% url 'Logout' %}">
+                                {% csrf_token %}
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-danger">Salir</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

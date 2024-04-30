@@ -23,11 +23,10 @@ urlpatterns = [
     path("login", views.login_request, name = "Login"),
     path("error_login", views.error_login, name = "Error_Login"),
     path("inicio", views.login_inicio, name = "inicio"),
+    path("subir_avatar", views.subir_avatar, name = "subir_avatar"),
     path("register", views.register, name= "Register"),
     path("logout" , LogoutView.as_view(template_name="logout.html") , name="Logout"),
     path("editarPerfil" , views.editarPerfil , name="EditarPerfil"),
-    
-    path("actualizar_avatar", views.actualizar_avatar, name='actualizar_avatar'),
    
     
     ]

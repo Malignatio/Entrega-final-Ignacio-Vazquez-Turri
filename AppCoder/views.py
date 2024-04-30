@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from AppCoder.models import Curso, Avatar
-from AppCoder.forms import Alumnos_formulario, AvatarForm
+from AppCoder.forms import AvatarForm
 from AppCoder.models import Alumnos, Profesores
 from django.http import HttpResponse
 from django.template import loader
+from django.db import transaction
 from AppCoder.forms import Curso_formulario
 from AppCoder.forms import Curso_formulario , UserEditForm
 from django.contrib.auth.forms import AuthenticationForm , UserCreationForm
@@ -16,6 +17,10 @@ from django.contrib.auth.decorators import login_required
 def inicio(request):
     avatares = Avatar.objects.filter(user=request.user.id)
     return render(request , "padre.html", {"padre": inicio,"url":avatares[0].imagen.url if avatares.exists () else None})
+
+
+
+
 
 
 def alta_curso(request, nombre):
@@ -145,7 +150,6 @@ def ver_alumnos(request):
     return render(request, 'ingresar.html', {'alumno': alumno})
 
 
-from django.shortcuts import redirect
 
 def login_request(request):
     if request.method == "POST":
@@ -161,18 +165,19 @@ def login_request(request):
                 login(request , user)
                 avatares = Avatar.objects.filter(user=request.user.id)
 
-                if avatares: 
+                if avatares:  
                     return render(request, "inicio.html", {"url": avatares[0].imagen.url})
                 else:
-                   
+                    
                     return render(request, "inicio.html")
             else:
-                return HttpResponse("Usuario no encontrado")
+                return render(request, "error_login.html") 
         else:
             return render(request, "error_login.html") 
 
     form = AuthenticationForm()
     return render(request, "login.html", {"form": form})
+
 
 
 def login_inicio(request):
@@ -221,15 +226,24 @@ def editarPerfil(request):
     
     return render( request , "editar_perfil.html", {"miFormulario":miFormulario, "usuario":usuario})
 
-def actualizar_avatar(request):
-    if request.method == 'POST':
-        form = AvatarForm(request.POST, request.FILES, instance=request.user.avatar)
-        if form.is_valid():
-            avatar = form.save(commit=False)
-            avatar.user = request.user
-            avatar.save()
-            return redirect('inicio') 
-    else:
-        form = AvatarForm(instance=request.user.avatar)  
 
-    return render(request, 'upload_avatar.html', {'form': form})
+
+from django.shortcuts import redirect
+
+@login_required
+def subir_avatar(request):
+    avatares = Avatar.objects.filter(user=request.user.id)
+    if request.method == 'POST':
+        form = AvatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            
+                Avatar.objects.filter(user=request.user.id).delete()  
+                avatar = form.save(commit=False)
+                avatar.user = request.user
+                avatar.save()
+
+                
+                return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+    else:
+        form = AvatarForm()
+    return render(request, 'subir_avatar.html', {'form': form})
