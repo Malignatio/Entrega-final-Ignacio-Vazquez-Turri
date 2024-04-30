@@ -4,7 +4,7 @@ from AppCoder.forms import AvatarForm
 from AppCoder.models import Alumnos, Profesores
 from django.http import HttpResponse
 from django.template import loader
-from django.db import transaction
+from django.shortcuts import redirect
 from AppCoder.forms import Curso_formulario
 from AppCoder.forms import Curso_formulario , UserEditForm
 from django.contrib.auth.forms import AuthenticationForm , UserCreationForm
@@ -165,10 +165,10 @@ def login_request(request):
                 login(request , user)
                 avatares = Avatar.objects.filter(user=request.user.id)
 
-                if avatares:  
-                    return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+                if avatares.exists():  
+                    avatar_url = avatares[0].imagen.url if avatares[0].imagen else None
+                    return render(request, "inicio.html", {"url": avatar_url})
                 else:
-                    
                     return render(request, "inicio.html")
             else:
                 return render(request, "error_login.html") 
@@ -177,7 +177,6 @@ def login_request(request):
 
     form = AuthenticationForm()
     return render(request, "login.html", {"form": form})
-
 
 
 def login_inicio(request):
@@ -228,22 +227,25 @@ def editarPerfil(request):
 
 
 
-from django.shortcuts import redirect
+
 
 @login_required
 def subir_avatar(request):
-    avatares = Avatar.objects.filter(user=request.user.id)
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
             
-                Avatar.objects.filter(user=request.user.id).delete()  
-                avatar = form.save(commit=False)
-                avatar.user = request.user
-                avatar.save()
-
-                
-                return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+            Avatar.objects.filter(user=request.user).delete()
+            
+            avatar = form.save(commit=False)
+            avatar.user = request.user
+            avatar.save()
+            
+            return redirect('inicio')
     else:
-        form = AvatarForm()
+        
+        avatar = Avatar.objects.filter(user=request.user).first()
+        
+        form = AvatarForm(instance=avatar)
+    
     return render(request, 'subir_avatar.html', {'form': form})

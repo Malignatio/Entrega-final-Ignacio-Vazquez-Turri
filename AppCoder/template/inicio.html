@@ -9,7 +9,9 @@
                 <div class="card text-center">
                     
                     
-                    <img src="{{ avatares.0.imagen.url }}" class="card-img-top" alt="Avatar Image">
+                    {% if url %}
+                    <img src="{{ url }}" class="img-fluid mb-3" alt="Avatar">
+                    {% endif %}
                     
                     <div class="card-body">
                         <h5 class="card-title">{{ usuario }}</h5>

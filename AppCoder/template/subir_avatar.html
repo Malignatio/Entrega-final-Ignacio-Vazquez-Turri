@@ -1,8 +1,6 @@
-
 {% extends "padre.html" %}
 
 {% block contenido %}
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subir Avatar</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .avatar-container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -18,6 +21,10 @@
             <div class="col-12 col-md-6">
                 <div class="form-container">
                     <h2>Actualizar imagen de avatar</h2>
+                    <div class="avatar-container">
+                        <p>Avatar actual</p>
+                        <img src="{{ url }}" class="img-fluid mb-3" alt="Avatar">
+                    </div>
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
