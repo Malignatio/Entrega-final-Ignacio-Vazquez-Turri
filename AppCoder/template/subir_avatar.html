@@ -23,13 +23,18 @@
                     <h2>Actualizar imagen de avatar</h2>
                     <div class="avatar-container">
                         <p>Avatar actual</p>
-                        <img src="{{ url }}" class="img-fluid mb-3" alt="Avatar">
+                        {% if url_avatar %}
+                            <img src="{{ url_avatar }}" class="img-fluid mb-3" alt="Avatar">
+                        {% else %}
+                            <p>No hay avatar actual</p>
+                        {% endif %}
                     </div>
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Cargar Avatar</button>
+                        <button type="submit" class="btn btn-primary" style="margin-left: 3cm;">Cargar Avatar</button>
                     </form>
+                    <a href="{% url 'inicio' %}" class="btn btn-warning" style="margin-left: 3cm;">Volver a inicio</a>
                 </div>
             </div>
         </div>

@@ -36,7 +36,7 @@
                 {% csrf_token %}
                     
                 
-                <img src="{{url}}" alt="" width="100px" height="100px">
+                <img src="{{url_avatar}}" alt="" width="100px" height="100px">
                 <p>Bienvenido, {{user.username}}</p>
                 <a class="btn btn-primary" href="{% url 'inicio' %}">Inicio</a>
                 <form action=" {% url 'Logout' %}" method="POST">

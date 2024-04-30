@@ -16,50 +16,35 @@ from django.contrib.auth.decorators import login_required
 
 def inicio(request):
     avatares = Avatar.objects.filter(user=request.user.id)
-    return render(request , "padre.html", {"padre": inicio,"url":avatares[0].imagen.url if avatares.exists () else None})
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None
+    return render(request, "padre.html", {"url_avatar": url_avatar})
 
-
-
-
-
-
-def alta_curso(request, nombre):
-    curso =  Curso(nombre = nombre , camada = 123456)
-    curso.save()
-
-    texto = f"Se guardo en la BD el curso {curso.nombre} {curso.camada}"
-
-    return HttpResponse(texto)
 
 @login_required
 def ver_cursos(request):
     cursos = Curso.objects.all()
     avatares = Avatar.objects.filter(user=request.user.id)
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None
     dicc = {"cursos" : cursos }
     plantilla = loader.get_template("cursos.html")
     documento = plantilla.render(dicc)
-    return render(request , "cursos.html", {"cursos": cursos,"url":avatares[0].imagen.url if avatares.exists () else None})
-
-def ver_alumnos(request):
-    alumnos_registrados = Alumnos.objects.all()
-    dicc = {"Alumnos registrados" : alumnos_registrados }
-    plantilla = loader.get_template("ingresar.html")
-    documento = plantilla.render(dicc)
-    return HttpResponse(documento) 
+    return render(request , "cursos.html", {"cursos": cursos,"url_avatar":url_avatar if avatares.exists () else None})
 
 
 
 def alumnos(request):
     avatares = Avatar.objects.filter(user=request.user.id)
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None
     
-    return render(request , "alumnos.html", {"alumnos": alumnos, "url":avatares[0].imagen.url if avatares.exists () else None})
+    return render(request , "alumnos.html", {"alumnos": alumnos, "url_avatar":url_avatar if avatares.exists () else None})
 
 
 def profesores (request):
     profesores= Profesores.objects.all()
     avatares = Avatar.objects.filter(user=request.user.id)
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None
 
-    return render(request , "profesores.html", {"profesores": profesores, "url":avatares[0].imagen.url if avatares.exists () else None})
+    return render(request , "profesores.html", {"profesores": profesores, "url_avatar":url_avatar if avatares.exists () else None})
 
 def curso_formulario(request):
 
@@ -103,20 +88,24 @@ def buscar(request):
 
 def buscar_curso(request):
     avatares = Avatar.objects.filter(user=request.user.id)
-    return render(request, "buscar_curso.html",{"cursos": buscar_curso,"url":avatares[0].imagen.url if avatares.exists () else None})
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None
+    return render(request, "buscar_curso.html",{"cursos": buscar_curso,"url_avatar":url_avatar if avatares.exists () else None})
 
 
 
 def elimina_curso(request, id):
-    
+    avatares = Avatar.objects.filter(user=request.user.id)
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None    
     curso = Curso.objects.get(id=id)
     curso.delete()
     curso= Curso.objects.all()
    
 
-    return render(request, "cursos.html", {"cursos" : curso})
+    return render(request, "cursos.html", {"cursos" : curso,"url_avatar":url_avatar if avatares.exists () else None})
 
 def editar(request , id):
+    avatares = Avatar.objects.filter(user=request.user.id)
+    url_avatar = avatares[0].imagen.url if avatares.exists() else None    
     curso = Curso.objects.get(id=id)
     if request.method == "POST":
         mi_formulario = Curso_formulario( request.POST )
@@ -126,13 +115,13 @@ def editar(request , id):
             curso.camada = datos["camada"]
             curso.save()
             curso = Curso.objects.all()
-            return render(request , "cursos.html" , {"cursos":curso})
+            return render(request , "cursos.html" , {"cursos":curso, "url_avatar":url_avatar if avatares.exists () else None})
 
         
     else:
-        mi_formulario = Curso_formulario(initial={"nombre":curso.nombre , "camada":curso.camada})
+        mi_formulario = Curso_formulario(initial={"nombre":curso.nombre , "camada":curso.camada , "url_avatar":url_avatar if avatares.exists () else None})
     
-    return render( request , "editar_curso.html" , {"mi_formulario": mi_formulario , "curso":curso})
+    return render( request , "editar_curso.html" , {"mi_formulario": mi_formulario , "curso":curso, "url_avatar":url_avatar if avatares.exists () else None})
 
 
 
@@ -164,10 +153,11 @@ def login_request(request):
             if user is not None:
                 login(request , user)
                 avatares = Avatar.objects.filter(user=request.user.id)
+                url_avatar = avatares[0].imagen.url if avatares.exists() else None
 
                 if avatares.exists():  
-                    avatar_url = avatares[0].imagen.url if avatares[0].imagen else None
-                    return render(request, "inicio.html", {"url": avatar_url})
+                    url_avatar = avatares[0].imagen.url if avatares.exists() else None
+                    return render(request, "inicio.html", {"url_avatar":url_avatar if avatares.exists () else None})
                 else:
                     return render(request, "inicio.html")
             else:
@@ -184,8 +174,9 @@ def login_inicio(request):
         
         if request.user.is_authenticated:
             avatares = Avatar.objects.filter(user=request.user.id)
+            url_avatar = avatares[0].imagen.url if avatares.exists() else None
             if avatares.exists():
-                return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+                return render(request, "inicio.html", {"url_avatar":url_avatar if avatares.exists () else None})
             else:
                
                 return render(request, "inicio.html")
@@ -212,6 +203,7 @@ def editarPerfil(request):
     if request.method =="POST":
         mi_formulario = UserEditForm(request.POST)
         avatares = Avatar.objects.filter(user=request.user.id)
+        url_avatar = avatares[0].imagen.url if avatares.exists() else None
 
         if mi_formulario.is_valid():
             informacion = mi_formulario.cleaned_data
@@ -219,7 +211,7 @@ def editarPerfil(request):
             password = informacion["password1"]
             usuario.set_password(password)
             usuario.save()
-            return render(request, "inicio.html", {"url": avatares[0].imagen.url})
+            return render(request, "inicio.html", {"url_avatar":url_avatar if avatares.exists () else None})
     else:
         miFormulario = UserEditForm(initial={"email":usuario.email} )
     
@@ -227,25 +219,22 @@ def editarPerfil(request):
 
 
 
-
-
-@login_required
 def subir_avatar(request):
     if request.method == 'POST':
         form = AvatarForm(request.POST, request.FILES)
         if form.is_valid():
-            
             Avatar.objects.filter(user=request.user).delete()
-            
             avatar = form.save(commit=False)
             avatar.user = request.user
             avatar.save()
-            
             return redirect('inicio')
     else:
-        
-        avatar = Avatar.objects.filter(user=request.user).first()
-        
-        form = AvatarForm(instance=avatar)
+        avatar_instance = Avatar.objects.filter(user=request.user).first()
+        form = AvatarForm(instance=avatar_instance)
     
-    return render(request, 'subir_avatar.html', {'form': form})
+    if avatar_instance:
+        url_avatar = avatar_instance.imagen.url
+    else:
+        url_avatar = None
+    
+    return render(request, 'subir_avatar.html', {'form': form, 'url_avatar': url_avatar})
